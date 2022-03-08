@@ -21,9 +21,7 @@ jobs:
     - name: Get PhysicsFS sources
       uses: actions/checkout@v2
     - name: Configure CMake
-      run: cmake -B build \
-        -DCMAKE_BUILD_TYPE=${{ matrix.platform.build_type }} \
-        ${{ matrix.platform.flags }}
+      run: cmake -B build -DCMAKE_BUILD_TYPE=${{ matrix.platform.build_type }} ${{ matrix.platform.flags }}
     - name: Build
       run: cmake --build build --config ${{ matrix.platform.build_type }}
     - uses: actions/upload-artifact@v3
