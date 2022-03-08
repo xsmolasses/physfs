@@ -9,9 +9,9 @@ jobs:
     strategy:
       matrix:
         platform:  # !!! FIXME: figure out an efficient way to get SDL2 on the Windows/Mac bots.
-        - { name: Linux,   os: ubuntu-20.04, flags: -GNinja }
-        - { name: Windows, os: windows-latest }
-        - { name: MacOS,   os: macos-latest }
+        - { name: Linux,   os: ubuntu-20.04, flags: -GNinja, build_type: "Release" }
+        - { name: Windows, os: windows-latest, build_type: "Release" }
+        - { name: MacOS,   os: macos-latest, build_type: "Release" }
     steps:
     - name: Setup Linux dependencies
       if: runner.os == 'Linux'
@@ -21,6 +21,11 @@ jobs:
     - name: Get PhysicsFS sources
       uses: actions/checkout@v2
     - name: Configure CMake
-      run: cmake -B build ${{ matrix.platform.flags }}
+      run: cmake -B build \
+        -DCMAKE_BUILD_TYPE=${{ matrix.platform.build_type }} \
+        ${{ matrix.platform.flags }}
     - name: Build
-      run: cmake --build build/
+      run: cmake --build build --config ${{ matrix.platform.build_type }}
+    - uses: actions/upload-artifact@v3
+      with:
+        path: build
